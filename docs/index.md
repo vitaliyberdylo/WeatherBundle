@@ -6,15 +6,6 @@ This bundle allows you to get current weather for specific cities.
 Installation
 ------------
 
-Install the bundle with:
-
-```shell
-    $ composer require vitber/weather-bundle
-```
-
-Configuration
--------------
-
 Because bundle was created for demo reasons there is not appropriate recipe and this bundle is not available on Packagist.
 
 1. Paste this repositories section at the bottom your application's ``composer.json`` file.
@@ -62,7 +53,10 @@ return [
     composer require "vitber/weather-bundle:*@dev"
 ```
 
-4. Configure API key and available cities
+Configuration
+-------------
+
+Configure API key and available cities
 
 By default this bundle gets data from OpenWeatherMap api.
 For using API you should create own account on http://openweathermap.org website and configure bundle your api_key.
