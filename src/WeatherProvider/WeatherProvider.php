@@ -5,7 +5,6 @@ namespace Vitber\WeatherBundle\WeatherProvider;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Vitber\WeatherBundle\CityProvider\CityProviderInterface;
-use Vitber\WeatherBundle\Event\CityProviderEvent;
 use Vitber\WeatherBundle\Event\WeatherProviderResponseEvent;
 
 class WeatherProvider implements WeatherProviderInterface
