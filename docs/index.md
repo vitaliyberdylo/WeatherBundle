@@ -12,11 +12,10 @@ Because bundle was created for demo reasons there is not appropriate recipe and 
 
 ```json
 {
-  ...
   "repositories": [
     {
-      "type": "path",
-      "url": "../WeatherBundle"
+      "type": "git",
+      "url": "https://github.com/vitaliyberdylo/WeatherBundle.git"
     }
   ]
 }
