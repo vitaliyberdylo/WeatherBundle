@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitber\WeatherBundle\Service\WeatherProvider;
+namespace Vitber\WeatherBundle\WeatherProvider;
 
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -11,7 +11,7 @@ class CachedWeatherProvider implements WeatherProviderInterface
     private const EXPIRATION_TIME = 60;
 
     public function __construct(
-        private ?WeatherProvider $weatherProvider,
+        private WeatherProviderInterface $weatherProvider,
         private CacheInterface $cache,
     ) {
     }
@@ -29,6 +29,6 @@ class CachedWeatherProvider implements WeatherProviderInterface
 
     private function getCashKey(string $city): string
     {
-        return self::CASH_PREFIX . trim($city);
+            return self::CASH_PREFIX . md5($city);
     }
 }

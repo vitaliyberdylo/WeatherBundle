@@ -1,13 +1,13 @@
 <?php
 
-namespace Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap;
+namespace Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap;
 
-use Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\Forecast\Request\ForecastRequest;
-use Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\Forecast\Response\Data;
-use Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\Forecast\Response\ForecastResponse;
-use Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\Forecast\Response\Weather;
-use Vitber\WeatherBundle\Service\WeatherProvider\NamedWeatherProviderInterface;
-use Vitber\WeatherBundle\Service\WeatherProvider\WeatherProviderResponse;
+use Psr\Log\LoggerInterface;
+use Vitber\WeatherBundle\WeatherProvider\NamedWeatherProviderInterface;
+use Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\Weather\Request\WeatherRequest;
+use Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\Weather\Response\Weather;
+use Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\Weather\Response\WeatherResponse;
+use Vitber\WeatherBundle\WeatherProvider\WeatherProviderResponse;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
@@ -22,7 +22,10 @@ class OpenWeatherMapProvider implements NamedWeatherProviderInterface
 
     public function __construct(
         private HttpClientInterface $client,
+        private LoggerInterface $logger,
+        private string $apiUrl,
         private string $apiKey,
+        private string $units,
     ) {
     }
 
@@ -33,32 +36,31 @@ class OpenWeatherMapProvider implements NamedWeatherProviderInterface
 
     public function getWeatherData(string $city): WeatherProviderResponse
     {
-        $request = new ForecastRequest(
+        $request = new WeatherRequest(
             $city,
-            $this->apiKey
+            $this->apiKey,
+            $this->units,
         );
 
         $response = $this->client->request(
             'GET',
-            ForecastRequest::API_URL,
+            $this->apiUrl . WeatherRequest::URL,
             [
                 'query' => (array) $request
             ]
         );
 
         $content = $response->getContent();
+        $this->logger->info('Open Weather Map API response', ['response' => $content]);
 
-        $clientResponse = $this->getSerializer()->deserialize($content, ForecastResponse::class, 'json');
+        $clientResponse = $this->getSerializer()->deserialize($content, WeatherResponse::class, 'json');
 
-        $list = $clientResponse->list;
-        /** @var Data $data */
-        $data = reset($list);
-        $weatherList = $data->weather;
+        $weatherList = $clientResponse->weather;
         /** @var Weather $weather */
         $weather = reset($weatherList);
 
         return new WeatherProviderResponse(
-            $data->main->temp,
+            $clientResponse->main->temp,
             $weather->main
         );
     }

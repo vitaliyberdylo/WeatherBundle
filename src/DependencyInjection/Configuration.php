@@ -15,13 +15,14 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('weather_provider')->defaultValue('open_weather_map')->end()
-                ->variableNode('city_provider')->end()
+                ->variableNode('cities')->end()
                 ->arrayNode('open_weather_map')
                     ->children()
                         ->scalarNode('api_url')->defaultValue('https://api.openweathermap.org/data/2.5/')->end()
                         ->scalarNode('api_key')->isRequired()->end()
-                    ->end() // open_weather_map
-                ->end()
+                        ->scalarNode('units')->defaultValue('metric')->end()
+                    ->end()
+                ->end() // open_weather_map
             ->end();
 
         return $treeBuilder;

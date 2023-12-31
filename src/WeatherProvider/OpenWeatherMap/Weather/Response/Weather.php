@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\Forecast\Response;
+namespace Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\Weather\Response;
 
 class Weather
 {

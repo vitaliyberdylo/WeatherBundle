@@ -18,8 +18,19 @@ class VitberWeatherExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
 
         $weatherProviderDefinition = $container->getDefinition(
-            'Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\OpenWeatherMapProvider'
+            'Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\OpenWeatherMapProvider'
         );
-        $weatherProviderDefinition->replaceArgument(1, $config['open_weather_map']['api_key']);
+
+        $weatherProviderDefinition->replaceArgument(2, $config['open_weather_map']['api_url']);
+        $weatherProviderDefinition->replaceArgument(3, $config['open_weather_map']['api_key']);
+        $weatherProviderDefinition->replaceArgument(4, $config['open_weather_map']['units']);
+
+        $cityProviderDefinition = $container->getDefinition(
+            'Vitber\WeatherBundle\CityProvider\CityProvider'
+        );
+        $cityProviderDefinition->addArgument($config['cities']);
+
+        $container->setParameter('weather_provider', $config['weather_provider']);
+        $container->setParameter('cities', $config['cities']);
     }
 }

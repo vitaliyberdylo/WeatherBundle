@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitber\WeatherBundle\Service\WeatherProvider;
+namespace Vitber\WeatherBundle\WeatherProvider;
 
 interface NamedWeatherProviderInterface extends WeatherProviderInterface
 {

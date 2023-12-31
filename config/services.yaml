@@ -1,34 +1,36 @@
-parameters:
-    weather_provider: open_weather_map
-    city_provider: '%env(json:VITBER_CITIES)%'
-
 services:
     _instanceof:
-        Vitber\WeatherBundle\Service\WeatherProvider\NamedWeatherProviderInterface:
+        Vitber\WeatherBundle\WeatherProvider\NamedWeatherProviderInterface:
             tags: [ 'vitber.weather_provider' ]
 
-    Vitber\WeatherBundle\Service\WeatherProvider\WeatherProviderInterface: '@Vitber\WeatherBundle\Service\WeatherProvider\WeatherProvider'
+    Vitber\WeatherBundle\WeatherProvider\WeatherProviderInterface: '@Vitber\WeatherBundle\WeatherProvider\WeatherProvider'
 
-    # City Providers
-    Vitber\WeatherBundle\Service\CityProvider\CityProvider:
-        arguments:
-            - '%city_provider%'
+    Vitber\WeatherBundle\CityProvider\CityProvider: ~
 
     # Weather Providers
-    Vitber\WeatherBundle\Service\WeatherProvider\WeatherProvider:
+    Vitber\WeatherBundle\WeatherProvider\WeatherProvider:
         arguments:
-            - '@Vitber\WeatherBundle\Service\CityProvider\CityProvider'
+            - '@Vitber\WeatherBundle\CityProvider\CityProvider'
             - !tagged_iterator { tag: 'vitber.weather_provider' }
+            - '@event_dispatcher'
             - '%weather_provider%'
 
-    Vitber\WeatherBundle\Service\WeatherProvider\CachedWeatherProvider:
-        decorates: Vitber\WeatherBundle\Service\WeatherProvider\WeatherProvider
+    Vitber\WeatherBundle\Twig\CityTwigExtension:
+        arguments:
+            - '@Vitber\WeatherBundle\CityProvider\CityProvider'
+        tags:
+            - { name: twig.extension }
+
+    Vitber\WeatherBundle\WeatherProvider\CachedWeatherProvider:
+        decorates: Vitber\WeatherBundle\WeatherProvider\WeatherProvider
         arguments:
             - '@.inner'
             - '@cache.app'
 
-    Vitber\WeatherBundle\Service\WeatherProvider\OpenWeatherMap\OpenWeatherMapProvider:
+    Vitber\WeatherBundle\WeatherProvider\OpenWeatherMap\OpenWeatherMapProvider:
         arguments:
             - '@Symfony\Contracts\HttpClient\HttpClientInterface'
+            - '@logger'
             - ''
-            - []
+            - ''
+            - ''

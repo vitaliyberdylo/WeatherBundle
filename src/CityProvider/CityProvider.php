@@ -1,6 +1,6 @@
 <?php
 
-namespace Vitber\WeatherBundle\Service\CityProvider;
+namespace Vitber\WeatherBundle\CityProvider;
 
 class CityProvider implements CityProviderInterface
 {
